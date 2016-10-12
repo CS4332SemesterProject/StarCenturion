@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding ="utf-8" ?>
+<IntroScreen>
+  <Path>IntroScreen/Image</Path>
+  <Position>
+    <X>125</X>
+    <Y>190</Y>
+  </Position>
+</IntroScreen>
