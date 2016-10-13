@@ -11,11 +11,17 @@ namespace SemesterProject
     {
         public Type Type { get; set; }
 
+        public XmlManager()
+        {
+            Type = typeof(T);
+        }
+
         public T Load(string path)
         {
             T instance;
             using (TextReader reader = new StreamReader(path))
             {
+                System.Diagnostics.Debug.Write("\n\n\n" + Type + "\n\n\n");
                 XmlSerializer xml = new XmlSerializer(Type);
                 instance =  (T)xml.Deserialize(reader);
             }

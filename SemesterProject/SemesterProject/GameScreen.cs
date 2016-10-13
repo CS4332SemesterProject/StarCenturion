@@ -14,10 +14,13 @@ namespace SemesterProject
         protected ContentManager content;
         [XmlIgnore]
         public Type Type;
+
+        public string XmlPath;
         
         public GameScreen()
         {
             Type = this.GetType();
+            XmlPath = "Load/" + Type.ToString().Replace("SemesterProject.", "") + ".xml";
         }
 
         public virtual void LoadStuff()
@@ -32,7 +35,7 @@ namespace SemesterProject
 
         public virtual void Update(GameTime gameTime)
         {
-
+            InputManager.Instance.Update();
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
