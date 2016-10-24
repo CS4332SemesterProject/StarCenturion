@@ -42,7 +42,12 @@ namespace StarCenturion.Screens
             };
 
             // User clicking the mouse will skip the intro screen.
-            _mouseListener.MouseClicked += (sender, args) => { Show<MainMenuScreen>(); };
+            _mouseListener.MouseClicked += (sender, args) =>
+            {
+                var clickPoint = new Point(args.CurrentState.X, args.CurrentState.Y);
+                if (_graphicsDevice.Viewport.Bounds.Contains(clickPoint))
+                    Show<MainMenuScreen>();
+            };
         }
 
         public override void LoadContent()

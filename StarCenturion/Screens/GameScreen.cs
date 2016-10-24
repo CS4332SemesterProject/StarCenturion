@@ -17,6 +17,7 @@ namespace StarCenturion.Screens
 {
     public class GameScreen : Screen
     {
+        private readonly GameWindow _window;
         private Camera2D _camera;
         private EntityComponentSystem _entityComponentSystem;
         private EntityFactory _entityFactory;
@@ -26,13 +27,12 @@ namespace StarCenturion.Screens
         {
             Services = services;
             GraphicsDevice = graphicsDevice;
-            Window = window;
+            _window = window;
         }
 
         public IServiceProvider Services { get; }
         public ContentManager Content { get; private set; }
         public GraphicsDevice GraphicsDevice { get; }
-        public GameWindow Window { get; }
 
         public override void Initialize()
         {
@@ -45,7 +45,7 @@ namespace StarCenturion.Screens
         {
             base.LoadContent();
 
-            var viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, 800, 480);
+            var viewportAdapter = new BoxingViewportAdapter(_window, GraphicsDevice, 800, 480);
             _camera = new Camera2D(viewportAdapter);
 
             _tiledMap = Content.Load<TiledMap>("level-1");
