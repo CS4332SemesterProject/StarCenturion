@@ -13,15 +13,15 @@ namespace StarCenturion.Entities.Systems
     public class PlayerMovementSystem : ComponentSystem
     {
         private const float WalkSpeed = 220f;
-        private const float JumpSpeed = 425f;
+        private const float JumpSpeed = 525f;
         private float _jumpDelay = 1.0f;
-        private Entity _playerEntity;
+        public Entity PlayerEntity { get; private set; }
         private KeyboardState _previousKeyboardState;
 
         protected override void OnEntityCreated(Entity entity)
         {
             if (entity.Name == Entities.Player)
-                _playerEntity = entity;
+                PlayerEntity = entity;
 
             base.OnEntityCreated(entity);
         }
@@ -29,21 +29,21 @@ namespace StarCenturion.Entities.Systems
         protected override void OnEntityDestroyed(Entity entity)
         {
             if (entity.Name == Entities.Player)
-                _playerEntity = null;
+                PlayerEntity = null;
 
             base.OnEntityDestroyed(entity);
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (_playerEntity == null)
+            if (PlayerEntity == null)
                 return;
 
             float deltaTime = gameTime.GetElapsedSeconds();
             var keyboardState = Keyboard.GetState();
-            var body = _playerEntity.GetComponent<BasicCollisionBody>();
-            var playerState = _playerEntity.GetComponent<CharacterState>();
-            var sprite = _playerEntity.GetComponent<AnimatedSprite>();
+            var body = PlayerEntity.GetComponent<BasicCollisionBody>();
+            var playerState = PlayerEntity.GetComponent<CharacterState>();
+            var sprite = PlayerEntity.GetComponent<AnimatedSprite>();
             var velocity = new Vector2(0, body.Velocity.Y);
 
             if (keyboardState.IsKeyDown(Keys.A))

@@ -22,6 +22,7 @@ namespace StarCenturion.Screens
         private EntityComponentSystem _entityComponentSystem;
         private EntityFactory _entityFactory;
         private TiledMap _tiledMap;
+        private PlayerMovementSystem _playerSystem;
 
         public GameScreen(IServiceProvider services, GraphicsDevice graphicsDevice, GameWindow window)
         {
@@ -45,7 +46,9 @@ namespace StarCenturion.Screens
         {
             base.LoadContent();
 
-            var viewportAdapter = new BoxingViewportAdapter(_window, GraphicsDevice, 800, 480);
+            int w = ScreenConst.Width;
+            int h = ScreenConst.Height;
+            var viewportAdapter = new BoxingViewportAdapter(_window, GraphicsDevice, w, h);
             _camera = new Camera2D(viewportAdapter);
 
             _tiledMap = Content.Load<TiledMap>("level-1");
@@ -56,7 +59,8 @@ namespace StarCenturion.Screens
             var service = new TiledObjectToEntityService(_entityFactory);
             var spawnPoint = _tiledMap.GetObjectGroup("entities").Objects.Single(i => i.Type == "Spawn").Position;
 
-            _entityComponentSystem.RegisterSystem(new PlayerMovementSystem());
+            _playerSystem = new PlayerMovementSystem();
+            _entityComponentSystem.RegisterSystem(_playerSystem);
             _entityComponentSystem.RegisterSystem(new EnemyMovementSystem());
             _entityComponentSystem.RegisterSystem(new CharacterStateSystem(_entityFactory, spawnPoint));
             _entityComponentSystem.RegisterSystem(new BasicCollisionSystem(new Vector2(0, 1150)));
@@ -73,6 +77,8 @@ namespace StarCenturion.Screens
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            var position = new Vector2(_playerSystem.PlayerEntity.Position.X, 480 / 2f);
+            _camera.LookAt(position);
 
             _entityComponentSystem.Update(gameTime);
         }

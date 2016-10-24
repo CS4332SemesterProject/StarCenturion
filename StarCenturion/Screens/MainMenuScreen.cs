@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarCenturion.Screens
 {
@@ -7,8 +8,8 @@ namespace StarCenturion.Screens
     {
         private readonly Game _game;
 
-        public MainMenuScreen(IServiceProvider serviceProvider, Game game)
-            : base(serviceProvider)
+        public MainMenuScreen(IServiceProvider serviceProvider, Game game, GraphicsDevice graphicsDevice,
+            GameWindow window) : base(serviceProvider, graphicsDevice, window)
         {
             _game = game;
         }

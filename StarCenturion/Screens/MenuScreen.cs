@@ -7,11 +7,13 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.BitmapFonts;
 using MonoGame.Extended.InputListeners;
 using MonoGame.Extended.Screens;
+using MonoGame.Extended.ViewportAdapters;
 
 namespace StarCenturion.Screens
 {
     public class MenuScreen : Screen
     {
+        private readonly BoxingViewportAdapter _boxingViewportAdapter;
         private readonly KeyboardListener _keyboardListener;
         private readonly MouseListener _mouseListener;
         private readonly IServiceProvider _serviceProvider;
@@ -19,12 +21,21 @@ namespace StarCenturion.Screens
         private int _selectedItemIndex;
         private SpriteBatch _spriteBatch;
 
-        protected MenuScreen(IServiceProvider serviceProvider)
+        protected MenuScreen(IServiceProvider serviceProvider, GraphicsDevice graphicsDevice, GameWindow window)
         {
             _serviceProvider = serviceProvider;
+            _graphicsDevice = graphicsDevice;
             MenuItems = new List<MenuItem>();
             _mouseListener = new MouseListener();
             _keyboardListener = new KeyboardListener();
+
+            int w = ScreenConst.Width;
+            int h = ScreenConst.Height;
+            int vb = ScreenConst.VerticalBleed;
+            int hb = ScreenConst.HorizontalBleed;
+
+            _boxingViewportAdapter = new BoxingViewportAdapter(window, _graphicsDevice, w, h, hb, vb);
+            _mouseListener = new MouseListener(_boxingViewportAdapter);
         }
 
         public List<MenuItem> MenuItems { get; }
@@ -53,18 +64,17 @@ namespace StarCenturion.Screens
             Content = new ContentManager(_serviceProvider, "Content");
         }
 
-        private void OnMouseClick(object sender, MouseEventArgs mouseEventArgs)
+        private void OnMouseClick(object sender, MouseEventArgs args)
         {
-            var m = mouseEventArgs.CurrentState;
-            bool isHovered = MenuItems[_selectedItemIndex].BoundingRectangle.Contains(m.X, m.Y);
+            bool isHovered = MenuItems[_selectedItemIndex].BoundingRectangle.Contains(args.Position);
 
             if (isHovered)
                 MenuItems[_selectedItemIndex].Action.Invoke();
         }
 
-        private void OnKeyRelease(object sender, KeyboardEventArgs keyboardEventArgs)
+        private void OnKeyRelease(object sender, KeyboardEventArgs args)
         {
-            switch (keyboardEventArgs.Key)
+            switch (args.Key)
             {
                 case Keys.Enter:
                     MenuItems[_selectedItemIndex].Action.Invoke();
@@ -121,10 +131,10 @@ namespace StarCenturion.Screens
 
         private void UpdateItemColor()
         {
-            var mouseState = Mouse.GetState();
             for (var i = 0; i < MenuItems.Count; ++i)
             {
-                bool isHovered = MenuItems[i].BoundingRectangle.Contains(mouseState.X, mouseState.Y);
+                var mousePosition = _boxingViewportAdapter.PointToScreen(Mouse.GetState().Position);
+                bool isHovered = MenuItems[i].BoundingRectangle.Contains(mousePosition);
 
                 if (isHovered)
                     _selectedItemIndex = i;
@@ -139,7 +149,7 @@ namespace StarCenturion.Screens
             base.Draw(gameTime);
             _graphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: _boxingViewportAdapter.GetScaleMatrix());
 
             foreach (var menuItem in MenuItems)
                 menuItem.Draw(_spriteBatch);

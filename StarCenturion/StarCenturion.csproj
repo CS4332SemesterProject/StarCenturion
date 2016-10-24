@@ -55,6 +55,7 @@
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Screens\MenuItem.cs" />
     <Compile Include="Screens\MenuScreen.cs" />
+    <Compile Include="Screens\ScreenConst.cs" />
     <Compile Include="Services\TiledObjectToEntityService.cs" />
     <Compile Include="StarCenturionGame.cs" />
     <Compile Include="Program.cs" />

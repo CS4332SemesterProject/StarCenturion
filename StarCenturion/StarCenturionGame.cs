@@ -22,8 +22,8 @@ namespace StarCenturion
         {
             var screens = new Screen[]
             {
-                new IntroScreen(Services),
-                new MainMenuScreen(Services, this),
+                new IntroScreen(Services, GraphicsDevice, Window),
+                new MainMenuScreen(Services, this, GraphicsDevice, Window),
                 new GameScreen(Services, GraphicsDevice, Window)
             };
 
